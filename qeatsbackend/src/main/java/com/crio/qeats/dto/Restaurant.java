@@ -9,6 +9,9 @@ package com.crio.qeats.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 // TODO: CRIO_TASK_MODULE_SERIALIZATION
 // Implement Restaurant class.
@@ -27,14 +30,18 @@ import java.util.List;
 // "South Indian"
 // ]
 // }
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Restaurant {
 
     private String restaurantId;
     private String name;
     private String city;
     private String imageUrl;
+    @Min(-90)
+    @Max(90)
     private Double latitude;
+    @Min(-180)
+    @Max(180)
     private Double longitude;
     private String opensAt;
     private String closesAt;
