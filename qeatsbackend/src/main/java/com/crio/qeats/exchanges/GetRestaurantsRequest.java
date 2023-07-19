@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.security.KeyStore.Entry.Attribute;
+import java.security.KeyStore.Entry.searchFor;
 
 // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
 //  Implement GetRestaurantsRequest.
@@ -31,13 +31,13 @@ public class GetRestaurantsRequest {
     @Min(-180)
     @Max(180)
     private Double longitude;
-    private String attribute;
+    private String searchFor;
 
     
-    public GetRestaurantsRequest(Double latitude, Double longitude, String attribute) {
+    public GetRestaurantsRequest(Double latitude, Double longitude, String searchFor) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.attribute = attribute;
+        this.searchFor = searchFor;
     }
 
 
@@ -70,13 +70,13 @@ public class GetRestaurantsRequest {
     }
 
 
-    public String getAttribute() {
-        return attribute;
+    public String getsearchFor() {
+        return searchFor;
     }
 
 
-    public void setAttribute(String attribute) {
-        this.attribute = attribute;
+    public void setsearchFor(String searchFor) {
+        this.searchFor = searchFor;
     }
 
     
