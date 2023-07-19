@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.security.KeyStore.Entry.searchFor;
 
 // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
 //  Implement GetRestaurantsRequest.
