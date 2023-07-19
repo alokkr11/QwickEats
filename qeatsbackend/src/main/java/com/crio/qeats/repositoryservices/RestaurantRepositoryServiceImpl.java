@@ -74,12 +74,9 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
         reqRestaurants.add(r);
       }
     }
+
     List<Restaurant> restaurants = new ArrayList<>();
     for (RestaurantEntity r : reqRestaurants) {
-      if (r.getName().contains("é")) {
-        String name = r.getName().replace('é', 'e');
-        r.setName(name);
-      }
       restaurants.add(modelMapperProvider.get().map(r, Restaurant.class));
     }
 

@@ -56,6 +56,8 @@ public class GetRestaurantsResponse {
         return restaurants;
     }
 
+    public GetRestaurantsResponse() {}
+
     public GetRestaurantsResponse(List<Restaurant> restaurants) {
         this.restaurants = restaurants;
     }
