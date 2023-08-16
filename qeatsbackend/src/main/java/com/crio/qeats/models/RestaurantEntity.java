@@ -10,12 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 // Java class that maps to Mongo collection.
 @Data
+@Getter
 @Document(collection = "restaurants")
 @NoArgsConstructor
 public class RestaurantEntity {

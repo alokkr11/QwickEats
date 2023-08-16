@@ -1,7 +1,7 @@
 
 /*
  *
- * * Copyright (c) Crio.Do 2019. All rights reserved
+ *  * Copyright (c) Crio.Do 2019. All rights reserved
  *
  */
 
@@ -25,7 +25,6 @@ import java.util.concurrent.Future;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,6 +33,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
   private final Double peakHoursServingRadiusInKms = 3.0;
   private final Double normalHoursServingRadiusInKms = 5.0;
+  
   @Autowired
   @Qualifier("RestaurantRepositoryServiceImpl")
   private RestaurantRepositoryService restaurantRepositoryService;
