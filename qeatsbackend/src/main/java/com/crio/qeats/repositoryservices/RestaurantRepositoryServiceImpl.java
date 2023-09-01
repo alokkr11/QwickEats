@@ -351,6 +351,41 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
     return restaurantList;
   }
 
+  @Override
+  public Future<List<Restaurant>> findRestaurantsByNameAsync(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+    List<Restaurant> restaurantList = findRestaurantsByName(latitude,
+        longitude, searchString, currentTime, servingRadiusInKms);
+    return new AsyncResult<>(restaurantList);
+  }
+
+  @Override
+  public Future<List<Restaurant>> findRestaurantsByAttributesAsync(Double latitude,
+      Double longitude, String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+    List<Restaurant> restaurantList = findRestaurantsByAttributes(
+        latitude, longitude, searchString, currentTime, servingRadiusInKms);
+    return new AsyncResult<>(restaurantList);
+  }
+
+  @Override
+  public Future<List<Restaurant>> findRestaurantsByItemNameAsync(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+    List<Restaurant> restaurantList = findRestaurantsByItemName(
+        latitude, longitude, searchString, currentTime, servingRadiusInKms);
+    return new AsyncResult<>(restaurantList);
+  }
+
+  @Override
+  public Future<List<Restaurant>> findRestaurantsByItemAttributesAsync(Double latitude,
+
+      Double longitude, String searchString, LocalTime currentTime,
+
+      Double servingRadiusInKms) {
+    List<Restaurant> restaurantList = findRestaurantsByItemAttributes(
+        latitude, longitude, searchString, currentTime, servingRadiusInKms);
+    return new AsyncResult<>(restaurantList);
+  }
+
 
 
 }

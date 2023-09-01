@@ -25,6 +25,7 @@ import java.util.concurrent.Future;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -48,8 +49,8 @@ public class RestaurantServiceImpl implements RestaurantService {
     Double latitude = getRestaurantsRequest.getLatitude();
     Double longitude = getRestaurantsRequest.getLongitude();
     if (currentTime.isAfter(LocalTime.of(7, 59)) && currentTime.isBefore(LocalTime.of(10, 1))
-    || currentTime.isAfter(LocalTime.of(12, 59)) && currentTime.isBefore(LocalTime.of(14, 1))
-    || currentTime.isAfter(LocalTime.of(18, 59)) && currentTime.isBefore(LocalTime.of(21, 1))) {
+        || currentTime.isAfter(LocalTime.of(12, 59)) && currentTime.isBefore(LocalTime.of(14, 1))
+        || currentTime.isAfter(LocalTime.of(18, 59)) && currentTime.isBefore(LocalTime.of(21, 1))) {
       List<Restaurant> allRestaurants = restaurantRepositoryService
           .findAllRestaurantsCloseBy(latitude, longitude, currentTime, peakHoursServingRadiusInKms);
       return new GetRestaurantsResponse(allRestaurants);
@@ -61,8 +62,6 @@ public class RestaurantServiceImpl implements RestaurantService {
   }
 
 
-  
-
 
   // @Override
   // public GetRestaurantsResponse findAllRestaurantsCloseBy(
@@ -70,7 +69,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 
   // }
-  private boolean isPeakHour(LocalTime currentTime) { 
+  private boolean isPeakHour(LocalTime currentTime) {
     if (currentTime.isAfter(LocalTime.of(7, 59)) && currentTime.isBefore(LocalTime.of(10, 1))
         || currentTime.isAfter(LocalTime.of(12, 59)) && currentTime.isBefore(LocalTime.of(14, 1))
         || currentTime.isAfter(LocalTime.of(18, 59)) && currentTime.isBefore(LocalTime.of(21, 1))) {
@@ -140,6 +139,62 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
   }
 
+
+
+  // TODO: CRIO_TASK_MODULE_MULTITHREADING
+  // Implement multi-threaded version of RestaurantSearch.
+  // Implement variant of findRestaurantsBySearchQuery which is at least 1.5x time faster than
+  // findRestaurantsBySearchQuery.
+  @Override
+  public GetRestaurantsResponse findRestaurantsBySearchQueryMt(
+      GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
+
+    Double servingRadiusInKms =
+        isPeakHour(currentTime) ? peakHoursServingRadiusInKms : normalHoursServingRadiusInKms;
+    String searchFor = getRestaurantsRequest.getSearchFor();
+    List<Restaurant> restaurantList;
+
+    if (!searchFor.isEmpty()) {
+      long startTime = System.currentTimeMillis();
+      Future<List<Restaurant>> futureGetRestaurantsByNameList = restaurantRepositoryService
+          .findRestaurantsByNameAsync(getRestaurantsRequest.getLatitude(),
+              getRestaurantsRequest.getLongitude(), searchFor, currentTime, servingRadiusInKms);
+      Future<List<Restaurant>> futureGetRestaurantsByAttributesList = restaurantRepositoryService
+          .findRestaurantsByAttributesAsync(getRestaurantsRequest.getLatitude(),
+              getRestaurantsRequest.getLongitude(), searchFor, currentTime, servingRadiusInKms);
+      List<Restaurant> restaurantsByNameList;
+      List<Restaurant> restaurantByAttributesList;
+      try {
+        while (true) {
+          if (futureGetRestaurantsByNameList.isDone()
+              && futureGetRestaurantsByAttributesList.isDone()) {
+            restaurantsByNameList = futureGetRestaurantsByNameList.get();
+            restaurantByAttributesList = futureGetRestaurantsByAttributesList.get();
+
+            log.info("Time in millis: " + (System.currentTimeMillis() - startTime));
+            break;
+          }
+        }
+      } catch (InterruptedException | ExecutionException e) {
+        e.printStackTrace();
+        return new GetRestaurantsResponse(new ArrayList<>());
+      }
+
+      Map<String, Restaurant> restaurantMap = new HashMap<>();
+      for (Restaurant restaurant : restaurantsByNameList) {
+        restaurantMap.put(restaurant.getRestaurantId(), restaurant);
+      }
+      for (Restaurant restaurant : restaurantByAttributesList) {
+        restaurantMap.put(restaurant.getRestaurantId(), restaurant);
+      }
+      restaurantList = new ArrayList<>(restaurantMap.values());
+    } else {
+      restaurantList = new ArrayList<>();
+    }
+    return new GetRestaurantsResponse(restaurantList);
+
+
+  }
 
 
 }
