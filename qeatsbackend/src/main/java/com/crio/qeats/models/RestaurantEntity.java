@@ -9,6 +9,8 @@ package com.crio.qeats.models;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Document(collection = "restaurants")
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@AllArgsConstructor
 public class RestaurantEntity {
 
   @Id

@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 // "longitude": 30.0,
 // "opensAt": "18:00",
 // "closesAt": "23:00",
-// "attributes": [
+//  searchFor": [
 // "Tamil",
 // "South Indian"
 // ]
@@ -51,7 +51,7 @@ public class Restaurant {
 
     public Restaurant(String restaurantId, String name, String city, String imageUrl,
             Double latitude, Double longitude, String opensAt, String closesAt,
-            List<String> attributes) {
+            List<String> searchFor) {
         this.restaurantId = restaurantId;
         this.name = name;
         this.city = city;
@@ -60,7 +60,7 @@ public class Restaurant {
         this.longitude = longitude;
         this.opensAt = opensAt;
         this.closesAt = closesAt;
-        this.attributes = attributes;
+        this.attributes = searchFor;
     }
 
     public String getRestaurantId() {
@@ -142,6 +142,8 @@ public class Restaurant {
                 + ", name=" + name + ", opensAt=" + opensAt + ", restaurantId=" + restaurantId
                 + "]";
     }
+
+    
 
 
 

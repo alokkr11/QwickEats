@@ -16,5 +16,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RestaurantRepository extends MongoRepository<RestaurantEntity, String> {
 
+    @Query("{'name':{$regex: '^?0$', $options: 'i'}}")
+    Optional<List<RestaurantEntity>> findRestaurantsByNameExact(String name);
+    
+    @Query("{'name': {$regex: '.?0.', $options: 'i'}}")
+    Optional<List<RestaurantEntity>> findRestaurantsByName(String searchString);
+
+    Optional<List<RestaurantEntity>> findByAttributesInIgnoreCase(List<String> attributes);
+
+    Optional<List<RestaurantEntity>> findRestaurantsByRestaurantIdIn(List<String> restaurantIds);
+
 }
 

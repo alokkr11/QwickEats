@@ -58,6 +58,8 @@ public class RedisConfiguration {
    * Checks is cache is intiailized and available. TIP: This would generally mean checking via
    * {@link JedisPool}
    * 
+   * Checks is cache is intiailized and available.
+   * TIP: This would generally mean checking via {@link JedisPool}
    * @return true / false if cache is available or not.
    */
   public boolean isCacheAvailable() {

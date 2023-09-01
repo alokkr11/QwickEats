@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) Crio.Do 2019. All rights reserved
+ * * Copyright (c) Crio.Do 2019. All rights reserved
  *
  */
 
@@ -15,7 +15,9 @@ import java.util.List;
 import javax.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,24 +56,61 @@ public class RestaurantController {
     log.info("getRestaurants called with {}", getRestaurantsRequest);
     GetRestaurantsResponse getRestaurantsResponse;
 
-    // CHECKSTYLE:OFF
-    getRestaurantsResponse =
-        restaurantService.findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
-    log.info("getRestaurants returned {}", getRestaurantsResponse);
-    // CHECKSTYLE:ON
+    if ((getRestaurantsRequest.getLatitude() != null && getRestaurantsRequest.getLongitude() != null
+        && getRestaurantsRequest.getLatitude() >= -90 && getRestaurantsRequest.getLatitude() <= 90
+        && getRestaurantsRequest.getLongitude() >= -180
+        && getRestaurantsRequest.getLongitude() <= 180)) {
 
-    List <Restaurant> restaurants= getRestaurantsResponse.getRestaurants();
+      List<Restaurant> restaurants;
 
-    for(Restaurant r  : restaurants){
-      if (r.getName().contains("é")) {
-        String name = r.getName().replace('é', 'e');
-        r.setName(name);
+      // if (!StringUtils.isEmpty(getRestaurantsRequest.getSearchFor())) {
+        if (getRestaurantsRequest.getSearchFor() !=null &&  !getRestaurantsRequest.getSearchFor().isEmpty()) {
+        getRestaurantsResponse =
+            restaurantService.findRestaurantsBySearchQuery(getRestaurantsRequest, LocalTime.now());
+        log.info("getRestaurants returned {}", getRestaurantsResponse);
+        // restaurants = getRestaurantsResponse.getRestaurants();
+      } else {
+        getRestaurantsResponse =
+            restaurantService.findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
+        // restaurants = getRestaurantsResponse.getRestaurants();
       }
+      if(getRestaurantsResponse!=null && !getRestaurantsResponse.getRestaurants().isEmpty()){
+        restaurants = getRestaurantsResponse.getRestaurants();
+        for (int i = 0; i < restaurants.size(); i++) {
+          restaurants.get(i).setName(restaurants.get(i).getName().replace("é", "e"));
+        }
+        log.info("getRestaurants returned {}", getRestaurantsResponse);
+  
+        return ResponseEntity.ok().body(getRestaurantsResponse);
+  
+      }else{
+        return new ResponseEntity<>(HttpStatus.OK) ;
+      }
+      
+
+    } else {
+      return ResponseEntity.badRequest().body(null);
     }
 
-    getRestaurantsResponse.setRestaurants(restaurants);
 
-    return ResponseEntity.ok().body(getRestaurantsResponse);
+
+    /*
+     * -- code before Search Implementation..
+     * 
+     * // CHECKSTYLE:OFF getRestaurantsResponse =
+     * restaurantService.findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
+     * 
+     * // CHECKSTYLE:ON
+     * 
+     * List <Restaurant> restaurants= getRestaurantsResponse.getRestaurants();
+     * 
+     * for(Restaurant r : restaurants){ if (r.getName().contains("é")) { String name =
+     * r.getName().replace('é', 'e'); r.setName(name); } }
+     * 
+     * getRestaurantsResponse.setRestaurants(restaurants);
+     * 
+     * return ResponseEntity.ok().body(getRestaurantsResponse);
+     */
   }
 
   // TIP(MODULE_MENUAPI): Model Implementation for getting menu given a restaurantId.

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) Crio.Do 2019. All rights reserved
+ * * Copyright (c) Crio.Do 2019. All rights reserved
  *
  */
 
@@ -11,6 +11,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
@@ -69,12 +70,12 @@ public class GetRestaurantsRequest {
     }
 
 
-    public String getsearchFor() {
+    public String getSearchFor() {
         return searchFor;
     }
 
 
-    public void setsearchFor(String searchFor) {
+    public void setSearchFor(String searchFor) {
         this.searchFor = searchFor;
     }
 
